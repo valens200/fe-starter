@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import jwt from "jwt-decode";
 import axios from "axios";
 import AppServices from "../../services";
 import { useDispatch } from "react-redux";

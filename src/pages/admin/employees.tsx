@@ -1,16 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import "../../assets/scss/dashboard.scss";
 import "../../assets/scss/modal.scss";
-import Modal from "../../components/models/Modal";
 import { selectIsLoggedIn } from "../../store/modules/authSlice";
 import AppServices from "../../services";
-import toast from "react-hot-toast";
 import {
   selectLaptopEmployees,
   setLaptopEmployees,
-  addLaptopEmployee,
-  updateLaptopEmployee,
-  removeLaptopEmployee,
 } from "../../store/modules/laptopEmployeeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -19,20 +14,23 @@ import {
 } from "../../store/modules/employeeSlice";
 import { selectLaptops, setLaptops } from "../../store/modules/laptopSlice";
 import TableWrapper from "../../components/common/TableWrapper";
-import { faker } from "@faker-js/faker";
 import { Button } from "@mantine/core";
-import { Link } from "react-router-dom";
 import { FiPlus } from "react-icons/fi";
 import { LuDownload } from "react-icons/lu";
 import AddEmployee from "../../components/modals/AddEmployee";
 import UpdateEmployee from "../../components/modals/UpdateEmployee";
 import { useRecoilState } from "recoil";
 import { showAddCommentState, showUpdateEmployee } from "../../atoms/index";
+import useSWR from "swr";
+import { authApi } from "../../utils/api/constants";
+import { da } from "@faker-js/faker";
+import { Toaster } from "react-hot-toast";
 
 function Employees() {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const laptopEmployees = useSelector(selectLaptopEmployees);
-  const employees = useSelector(selectEmployees);
+  let data = useSelector(selectEmployees);
+  const [data2, setData2] = useState<any[]>([]);
   const laptops = useSelector(selectLaptops);
   const dispatch = useDispatch();
   const [, setShowUpdateEmployee] = useRecoilState(showUpdateEmployee);
@@ -74,72 +72,6 @@ function Employees() {
   const [selectedLaptopEmployeeId, setSelectedLaptopEmployeeId] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-
-    const isUpdating = selectedLaptopEmployeeId !== "";
-
-    toast.promise(
-      isDeleting
-        ? AppServices.deleteLaptopEmployee(selectedLaptopEmployeeId)
-        : isUpdating
-        ? AppServices.updateLaptopEmployee(
-            selectedLaptopEmployee,
-            selectedLaptopEmployeeId
-          )
-        : AppServices.registerLaptopEmployee(selectedLaptopEmployee),
-      {
-        loading: `${
-          isDeleting ? "Deleting" : isUpdating ? "Updating" : "Creating"
-        } laptopEmployee ...`,
-        success: (response) => {
-          if (isDeleting)
-            dispatch(removeLaptopEmployee(selectedLaptopEmployeeId));
-          else if (isUpdating)
-            dispatch(
-              updateLaptopEmployee({
-                ...response.data.data,
-                ...selectedLaptopEmployee,
-              })
-            );
-          else dispatch(addLaptopEmployee(response.data.data));
-
-          if (selectedLaptopEmployee.password?.length) {
-            AppServices.updateLaptopEmployeePassword(
-              {
-                newPassword: selectedLaptopEmployee.password,
-                confirmPassword: selectedLaptopEmployee.password,
-              },
-              selectedLaptopEmployeeId
-            );
-          }
-
-          let message = `${
-            isDeleting ? "Deleted" : isUpdating ? "Updated" : "Created"
-          } laptopEmployee successfully`;
-          if (isUpdating) setSelectedLaptopEmployeeId("");
-          if (isDeleting) setIsDeleting(false);
-          setSelectedLaptopEmployee({});
-          toggleModal();
-          return message;
-        },
-        error: (error) => {
-          let message =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          if (message.includes("required pattern"))
-            if (message.includes("chasisNumber"))
-              return "invalid chasisNumber number";
-            else return "invalid manufactureCompany";
-          return message;
-        },
-      }
-    );
-  };
-
   interface Employee {
     id: Number;
     firstName: string;
@@ -148,7 +80,6 @@ function Employees() {
     gender: string;
     email: string;
   }
-
   const columns = [
     {
       title: "First Name",
@@ -159,13 +90,18 @@ function Employees() {
       title: "Last Name",
       key: "lastName",
     },
-    {
-      title: "User Name",
-      key: "username",
-    },
+
     {
       title: "Gender",
       key: "gender",
+    },
+    {
+      title: "National Id",
+      key: "nationalId",
+    },
+    {
+      title: "Phone Number",
+      key: "phone",
     },
     {
       title: "Email",
@@ -178,7 +114,7 @@ function Employees() {
         return (
           <div className="flex items-center gap-x-2">
             <Button
-              onClick={() => setShowUpdateEmployee(true)}
+              // onClick={() => dispatch(showUpdateEmployee(true))}
               variant="outline"
             >
               Edit &rarr;
@@ -189,19 +125,36 @@ function Employees() {
     },
   ];
 
-  const data = Array.from({ length: 25 }, () => ({
-    id: faker.string.uuid(),
-    firstName: faker.name.firstName(),
-    lastName: faker.name.lastName(),
-    username: faker.name.firstName(),
-    gender: faker.name.gender(),
-    email: faker.internet.email(),
-  }));
+  // const data = Array.from({ length: 25 }, () => ({
+  //   id: faker.string.uuid(),
+  //   firstName: faker.name.firstName(),
+  //   lastName: faker.name.lastName(),
+  //   username: faker.name.firstName(),
+  //   gender: faker.name.gender(),
+  //   email: faker.internet.email(),
+  // }));
+  const fetchData = async () => {
+    try {
+      const res = await authApi.get("/employees");
+      dispatch(setEmployees(res.data.employees));
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    if (data.length == 0) {
+      fetchData();
+    }
+  });
   return (
     <div className="pl-10 pt-10">
       <AddEmployee />
       <UpdateEmployee />
       <AddEmployee />
+      <Toaster />
+
       <main className="min-h-[75vh]">
         <TableWrapper
           title="List of your laptops"

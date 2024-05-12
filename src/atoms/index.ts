@@ -44,6 +44,7 @@ export const showAddCommentState = atom({
   key: "showAddComment",
   default: false,
 });
+
 export const showUpdateEmployee = atom({
   key: "showUpdateEmployee",
   default: false,
@@ -55,5 +56,10 @@ export const showUpdateLaptop = atom({
 
 export const showCreateLaptop = atom({
   key: "showCreateLaptop",
+  default: false,
+});
+
+export const showAssignLaptop = atom({
+  key: "showAssignLaptop",
   default: false,
 });

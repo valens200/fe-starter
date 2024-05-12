@@ -3,10 +3,11 @@ import authReducer from "./modules/authSlice";
 import employeeReducer from "./modules/employeeSlice";
 import laptopReducer from "./modules/laptopSlice";
 import laptopEmployeeReducer from "./modules/laptopEmployeeSlice";
-import { useDispatch } from "react-redux";
+import AppReducer from "./modules/appSlice";
 
 export const store = configureStore({
   reducer: {
+    app: AppReducer,
     auth: authReducer,
     employee: employeeReducer,
     laptop: laptopReducer,

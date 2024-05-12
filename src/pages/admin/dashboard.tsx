@@ -1,154 +1,56 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import "../../assets/scss/dashboard.scss";
 import "../../assets/scss/modal.scss";
-import Modal from "../../components/models/Modal";
 import { selectIsLoggedIn } from "../../store/modules/authSlice";
-import AppServices from "../../services";
-import toast from "react-hot-toast";
-import {
-  selectLaptopEmployees,
-  setLaptopEmployees,
-  addLaptopEmployee,
-  updateLaptopEmployee,
-  removeLaptopEmployee,
-} from "../../store/modules/laptopEmployeeSlice";
+import { selectLaptopEmployees } from "../../store/modules/laptopEmployeeSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { selectLaptops, setLaptops } from "../../store/modules/laptopSlice";
+import TableWrapper from "../../components/common/TableWrapper";
+import { faker } from "@faker-js/faker";
+import { Box, Button } from "@mantine/core";
+import { FiPlus } from "react-icons/fi";
+import { LuDownload } from "react-icons/lu";
+import StatsCard, { StatsCardProps } from "../../components/common/StatsCard";
+import {
+  showAddCommentState,
+  showAssignLaptop,
+  showUpdateEmployee,
+} from "../../atoms/index";
+import { useRecoilState } from "recoil";
+import AddEmployee from "../../components/modals/AddEmployee";
+import { AppDispatch } from "../../store";
+import useSWR from "swr";
+import { authApi } from "../../utils/api/constants";
 import {
   selectEmployees,
   setEmployees,
 } from "../../store/modules/employeeSlice";
-import { selectLaptops, setLaptops } from "../../store/modules/laptopSlice";
-import TableWrapper from "../../components/common/TableWrapper";
-import { faker } from "@faker-js/faker";
-import { Button } from "@mantine/core";
-import { Link } from "react-router-dom";
-import { FiPlus } from "react-icons/fi";
-import { LuDownload } from "react-icons/lu";
-import StatsCard, { StatsCardProps } from "../../components/common/StatsCard";
-import AddLaptop from "../../components/modals/AddLaptop";
-import { showAddCommentState, showUpdateEmployee } from "../../atoms/index";
-import { useRecoilState } from "recoil";
-import AddEmployee from "../../components/modals/AddEmployee";
-import { AppDispatch } from "../../store";
+import UpdateEmployee from "../../components/modals/UpdateEmployee";
+import { MdAssignmentAdd } from "react-icons/md";
+import AssignLaptops from "../../components/modals/AssignLaptops";
 
 function AdminDashboard() {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const laptopEmployees = useSelector(selectLaptopEmployees);
-  const employees = useSelector(selectEmployees);
   const laptops = useSelector(selectLaptops);
   const dispatch = useDispatch<AppDispatch>();
   const [filter, setFilter] = useState({});
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      AppServices.getLaptopEmployees().then((response) => {
-        if (response.data.data) {
-          dispatch(setLaptopEmployees(response.data.data));
-        }
-      });
-
-      AppServices.getEmployees().then((response) => {
-        if (response.data.data) {
-          dispatch(setEmployees(response.data.data));
-        }
-      });
-
-      AppServices.getLaptops().then((response) => {
-        if (response.data.data) {
-          dispatch(setLaptops(response.data.data));
-        }
-      });
-    }
-  }, [isLoggedIn]);
-
   const childRef: any = useRef(null);
-
-  const toggleModal = () => {
-    if (childRef.current) childRef.current.toggleModal();
-  };
-
-  const [selectedLaptopEmployee, setSelectedLaptopEmployee]: any | {} =
-    useState({
-      password: "",
-    });
-  const [selectedLaptopEmployeeId, setSelectedLaptopEmployeeId] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
   const [, setShowAddCommentState] = useRecoilState(showAddCommentState);
+  const [, setShowUpdateEmployee] = useRecoilState(showUpdateEmployee);
+  const [, setShowAssignLaptop] = useRecoilState(showAssignLaptop);
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
+  const data = useSelector(selectEmployees);
 
-    const isUpdating = selectedLaptopEmployeeId !== "";
-
-    toast.promise(
-      isDeleting
-        ? AppServices.deleteLaptopEmployee(selectedLaptopEmployeeId)
-        : isUpdating
-        ? AppServices.updateLaptopEmployee(
-            selectedLaptopEmployee,
-            selectedLaptopEmployeeId
-          )
-        : AppServices.registerLaptopEmployee(selectedLaptopEmployee),
-      {
-        loading: `${
-          isDeleting ? "Deleting" : isUpdating ? "Updating" : "Creating"
-        } laptopEmployee ...`,
-        success: (response) => {
-          if (isDeleting)
-            dispatch(removeLaptopEmployee(selectedLaptopEmployeeId));
-          else if (isUpdating)
-            dispatch(
-              updateLaptopEmployee({
-                ...response.data.data,
-                ...selectedLaptopEmployee,
-              })
-            );
-          else dispatch(addLaptopEmployee(response.data.data));
-
-          if (selectedLaptopEmployee.password?.length) {
-            AppServices.updateLaptopEmployeePassword(
-              {
-                newPassword: selectedLaptopEmployee.password,
-                confirmPassword: selectedLaptopEmployee.password,
-              },
-              selectedLaptopEmployeeId
-            );
-          }
-
-          let message = `${
-            isDeleting ? "Deleted" : isUpdating ? "Updated" : "Created"
-          } laptopEmployee successfully`;
-          if (isUpdating) setSelectedLaptopEmployeeId("");
-          if (isDeleting) setIsDeleting(false);
-          setSelectedLaptopEmployee({});
-          toggleModal();
-          return message;
-        },
-        error: (error) => {
-          let message =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          if (message.includes("required pattern"))
-            if (message.includes("chasisNumber"))
-              return "invalid chasisNumber number";
-            else return "invalid manufactureCompany";
-          return message;
-        },
-      }
-    );
+  const showUpdate = (employee: any) => {
+    setShowUpdateEmployee(true);
+    localStorage.setItem("selectedEmployee", JSON.stringify(employee));
   };
 
-  interface Employee {
-    id: Number;
-    firstName: string;
-    lastName: string;
-    username: string;
-    gender: string;
-    email: string;
-  }
+  const showAssign = (employee: any) => {
+    localStorage.setItem("selectedEmployee", JSON.stringify(employee));
+    setShowAssignLaptop(true);
+  };
 
   const columns = [
     {
@@ -160,13 +62,18 @@ function AdminDashboard() {
       title: "Last Name",
       key: "lastName",
     },
-    {
-      title: "User Name",
-      key: "username",
-    },
+
     {
       title: "Gender",
       key: "gender",
+    },
+    {
+      title: "National Id",
+      key: "nationalId",
+    },
+    {
+      title: "Phone Number",
+      key: "phone",
     },
     {
       title: "Email",
@@ -178,10 +85,10 @@ function AdminDashboard() {
       Element: (row: any) => {
         return (
           <div className="flex items-center gap-x-2">
-            <Button
-              onClick={() => dispatch(showUpdateEmployee(true))}
-              variant="outline"
-            >
+            <Button onClick={() => showAssign(row)} variant="outline">
+              <MdAssignmentAdd />
+            </Button>
+            <Button onClick={() => showUpdate(row)} variant="outline">
               Edit &rarr;
             </Button>
           </div>
@@ -190,14 +97,29 @@ function AdminDashboard() {
     },
   ];
 
-  const data = Array.from({ length: 25 }, () => ({
-    id: faker.string.uuid(),
-    firstName: faker.name.firstName(),
-    lastName: faker.name.lastName(),
-    username: faker.name.firstName(),
-    gender: faker.name.gender(),
-    email: faker.internet.email(),
-  }));
+  // const data2 = Array.from({ length: 25 }, () => ({
+  //   id: faker.string.uuid(),
+  //   firstName: faker.name.firstName(),
+  //   lastName: faker.name.lastName(),
+  //   username: faker.name.firstName(),
+  //   gender: faker.name.gender(),
+  //   email: faker.internet.email(),
+  // }));
+
+  const {
+    data: employees,
+    isLoading,
+    error,
+  } = useSWR("/employees", async (url) => {
+    try {
+      const res = await authApi.get(url);
+      dispatch(setEmployees(res.data.employees));
+      // setData(res.data.employees);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  });
 
   const stats: StatsCardProps[] = [
     {
@@ -237,6 +159,8 @@ function AdminDashboard() {
     <div className="w-full space-y-6 pl-10 pt-10">
       <div className="space-y-3">
         <AddEmployee />
+        <UpdateEmployee />
+        <AssignLaptops />
 
         <h1 className="text-xl font-medium text-gray-600">
           {/* {"Welcome " + auth.user?.firstName + " " + auth.user?.lastName} */}

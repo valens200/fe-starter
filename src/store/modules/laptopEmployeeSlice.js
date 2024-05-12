@@ -14,7 +14,10 @@ export const AuthSlice = createSlice({
       state.isLaptopEmployeesLoaded = true;
     },
     addLaptopEmployee: (state, action) => {
-      state.laptopEmployeeEmployees.items = [...state.laptopEmployeeEmployees.items, action.payload];
+      state.laptopEmployeeEmployees.items = [
+        ...state.laptopEmployeeEmployees.items,
+        action.payload,
+      ];
     },
     updateLaptopEmployee: (state, action) => {
       for (const i in state.laptopEmployeeEmployees.items) {
@@ -24,14 +27,24 @@ export const AuthSlice = createSlice({
       }
     },
     removeLaptopEmployee: (state, action) => {
-      state.laptopEmployeeEmployees.items = state.laptopEmployeeEmployees.items.filter((laptopEmployee) => laptopEmployee.id !== action.payload);
+      state.laptopEmployeeEmployees.items =
+        state.laptopEmployeeEmployees.items.filter(
+          (laptopEmployee) => laptopEmployee.id !== action.payload
+        );
     },
   },
 });
 
-export const { setLaptopEmployees, addLaptopEmployee, removeLaptopEmployee, updateLaptopEmployee } = AuthSlice.actions;
+export const {
+  setLaptopEmployees,
+  addLaptopEmployee,
+  removeLaptopEmployee,
+  updateLaptopEmployee,
+} = AuthSlice.actions;
 
-export const selectLaptopEmployees = (state) => state.laptopEmployee.laptopEmployeeEmployees.items;
-export const isLaptopEmployeesLoaded = (state) => state.laptopEmployee.isLaptopEmployeesLoaded;
+export const selectLaptopEmployees = (state) =>
+  state.laptopEmployee.laptopEmployeeEmployees.items;
+export const isLaptopEmployeesLoaded = (state) =>
+  state.laptopEmployee.isLaptopEmployeesLoaded;
 
 export default AuthSlice.reducer;

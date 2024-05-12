@@ -123,10 +123,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                   </Route>
                   <Route path="*" element={<NotFound />} />
                 </Routes>
+                <Toaster />
               </AuthProvider>
             </Router>
           </Provider>
-          <Toaster />
         </React.StrictMode>
       </React.StrictMode>
     </MantineProvider>
