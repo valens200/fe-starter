@@ -9,7 +9,8 @@ import LoadingSpinner from "../common/LoadingSpinner";
 
 export default function AssignLaptops() {
   const [show, setShow] = useRecoilState(showAssignLaptop);
-  const employee = JSON.parse(localStorage.getItem("selectedEmployee")!).row;
+  // const employee = JSON.parse(localStorage.getItem("selectedEmployee")!).row;
+  const employee: any = {};
   const [info, setInfo] = useState({
     modelName: "",
     manufacturer: "",
@@ -43,6 +44,9 @@ export default function AssignLaptops() {
             data={["HP", "dell"]}
             searchable
             hidePickedOptions
+            nothingFoundMessage="No data found"
+            maxValues={1}
+            clearable
           />
         </Box>
         <div className="flex w-full justify-end items-end">

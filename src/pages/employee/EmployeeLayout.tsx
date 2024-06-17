@@ -37,10 +37,10 @@ const EmployeeLayout = ({ children, links }: LayoutProps) => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/login");
-  };
+  // const handleLogout = () => {
+  //   dispatch(logout());
+  //   navigate("/login");
+  // };
 
   useEffect(() => {
     if (!loaded) {

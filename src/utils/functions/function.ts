@@ -1,3 +1,4 @@
+import { ro } from "@faker-js/faker";
 import { ErrorResponse, UserRole } from "../../types";
 import { jwtDecode } from "jwt-decode";
 
@@ -17,6 +18,7 @@ export const capitalize = (str: string): string => {
 };
 
 export const getUseRoute = (role: UserRole): string => {
+  console.log(role, "======");
   switch (role) {
     case UserRole.EMPLOYEE:
       return "/employee/dashboard";

@@ -37,11 +37,6 @@ const AdminLayout = ({ children, links }: LayoutProps) => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/login");
-  };
-
   useEffect(() => {
     if (!loaded) {
       dispatch(loadUser());

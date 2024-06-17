@@ -23,7 +23,7 @@ import { useRecoilState } from "recoil";
 import { showAddCommentState, showUpdateEmployee } from "../../atoms/index";
 import useSWR from "swr";
 import { authApi } from "../../utils/api/constants";
-import { da } from "@faker-js/faker";
+import { da, faker } from "@faker-js/faker";
 import { Toaster } from "react-hot-toast";
 
 function Employees() {
@@ -90,23 +90,32 @@ function Employees() {
       title: "Last Name",
       key: "lastName",
     },
-
     {
-      title: "Gender",
-      key: "gender",
-    },
-    {
-      title: "National Id",
-      key: "nationalId",
+      title: "Email",
+      key: "email",
     },
     {
       title: "Phone Number",
       key: "phone",
     },
     {
-      title: "Email",
-      key: "email",
+      title: "National Id",
+      key: "nationalId",
     },
+    {
+      title: "Department",
+      key: "department",
+    },
+    {
+      title: "Positon",
+      key: "position",
+    },
+
+    // {
+    //   title: "Gender",
+    //   key: "gender",
+    // },
+
     {
       title: "Actions",
       key: "actions",
@@ -125,7 +134,7 @@ function Employees() {
     },
   ];
 
-  // const data = Array.from({ length: 25 }, () => ({
+  // const data3 = Array.from({ length: 25 }, () => ({
   //   id: faker.string.uuid(),
   //   firstName: faker.name.firstName(),
   //   lastName: faker.name.lastName(),
@@ -135,7 +144,7 @@ function Employees() {
   // }));
   const fetchData = async () => {
     try {
-      const res = await authApi.get("/employees");
+      const res = await authApi.get("/employees/all");
       dispatch(setEmployees(res.data.employees));
     } catch (error) {
       console.log(error);

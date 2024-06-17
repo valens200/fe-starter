@@ -5,7 +5,7 @@ import { Button } from "@mantine/core";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
-const staticUser = {
+export const staticUser = {
   name: "Tom Cook",
   email: "tom@example.com",
   imageUrl:

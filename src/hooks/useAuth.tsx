@@ -1,5 +1,4 @@
 import {
-  getErrorFromResponse,
   getErrorFromResponseData,
   getUseRoute,
 } from "../utils/functions/function";
@@ -33,11 +32,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         email: email,
         password: password,
       });
-      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("token", res.data.data.token);
       toast.success("The user logged in successfully");
+      console.log(res.data.data.user.roles);
 
-      if (!res.data.profile.roles) toast.error("The user don't have any role");
-      navigate(getUseRoute(res.data.profile.roles[0].roleName));
+      if (!res.data.data.user.roles)
+        toast.error("The user don't have any role");
+
+      navigate(getUseRoute(res.data.data.user.roles[0].name));
       setLoggingIn(false);
     } catch (error) {
       toast.error(getErrorFromResponseData(error));

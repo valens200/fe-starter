@@ -12,7 +12,8 @@ import { fa } from "@faker-js/faker";
 export default function UpdateEmployee() {
   const [show, setShow] = useRecoilState(showUpdateEmployee);
   const [loading, setLoading] = useState(false);
-  const employee = JSON.parse(localStorage.getItem("selectedEmployee")!).row;
+  // const employee = JSON.parse(localStorage.getItem("selectedEmployee")!).row;
+  const employee: any = {};
   const [formData, setFormData] = useState<{
     id: string;
     firstName: string;
@@ -55,17 +56,13 @@ export default function UpdateEmployee() {
         email: formData.email,
         password: "VAVAvalens2003@",
       });
-      console.log("Helooooooo=======");
       console.log(res);
       setTimeout(() => {
         setShow(false);
         setLoading(false);
       }, 2000);
       toast.success(res.data.message);
-      console.log("Helooooooo=======");
     } catch (error: any) {
-      console.log("Helooooooo=======");
-
       console.log(error);
       if (!error.response) toast.error("Network error");
       toast.error(error.response.data.message);

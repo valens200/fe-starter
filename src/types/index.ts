@@ -35,3 +35,22 @@ export enum UserRole {
   EMPLOYEE = "EMPLOYEE",
   ADMIN = "ADMIN",
 }
+
+export interface Address {
+  province: string;
+  district: string;
+  sector: string;
+  cell: string;
+  village: string;
+}
+
+export interface Profile {
+  profilePicture?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  nationalId: string;
+  createdAt: string;
+  address: Address;
+}

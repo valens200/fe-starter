@@ -26,6 +26,7 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import EmployeeOverview from "./pages/employee/dashboard";
 import AdminDashboard from "./pages/admin/dashboard";
 import { AuthProvider } from "./hooks/useAuth";
+import AdminProfile from "./pages/admin/profile";
 
 const theme = createTheme({});
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
@@ -63,6 +64,12 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                             alternativeImage: <Department />,
                             url: "admin/laptops",
                           },
+                          {
+                            name: "Profile",
+                            url: "admin/profile",
+                            image: <ActiveHome />,
+                            alternativeImage: <LuLayoutDashboard />,
+                          },
                         ]}
                         children={undefined}
                       />
@@ -74,6 +81,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                     />
                     <Route path="/admin/employees" element={<Employees />} />
                     <Route path="/admin/laptops" element={<Laptops />} />
+                    <Route path="/admin/profile" element={<AdminProfile />} />
                   </Route>
                   <Route
                     path="/employee/"

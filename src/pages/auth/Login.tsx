@@ -37,8 +37,17 @@ function Login() {
   }, [isLoggedIn]);
 
   const handleLogin = (e: any) => {
-    login(email, password);
     e.preventDefault();
+
+    if (!email || email == "" || !password || password == "") {
+      if (!email || email == "") {
+        toast.error("Email is required");
+      } else if (!password || password == "") {
+        toast.error("Password is required");
+      }
+      return;
+    }
+    login(email, password);
 
     if (submitted) return;
     setSubmitted(true);
@@ -59,7 +68,7 @@ function Login() {
   return (
     <div className="bg-main h-screen flex justify-center">
       <div className="form bg-[rgb(255,255,255)] flex max-w-md w-screen justify-center p-8 m-auto">
-        <form className="text-center" onSubmit={handleLogin}>
+        <form method="post" className="text-center" onSubmit={handleLogin}>
           <img src={loggo} className="mb-2  h-1/6 mx-auto" alt="" />
           <div className="title mb-8">
             Welcome to EDS <br />

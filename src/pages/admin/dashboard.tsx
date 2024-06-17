@@ -97,14 +97,14 @@ function AdminDashboard() {
     },
   ];
 
-  // const data2 = Array.from({ length: 25 }, () => ({
-  //   id: faker.string.uuid(),
-  //   firstName: faker.name.firstName(),
-  //   lastName: faker.name.lastName(),
-  //   username: faker.name.firstName(),
-  //   gender: faker.name.gender(),
-  //   email: faker.internet.email(),
-  // }));
+  const data2 = Array.from({ length: 25 }, () => ({
+    id: faker.string.uuid(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
+    username: faker.name.firstName(),
+    gender: faker.name.gender(),
+    email: faker.internet.email(),
+  }));
 
   const {
     data: employees,
@@ -176,7 +176,7 @@ function AdminDashboard() {
         <TableWrapper
           title="Current enrolled employees"
           columns={columns}
-          data={data}
+          data={data2}
           pageSize={7}
           actions={
             <>
