@@ -70,7 +70,9 @@
 
     "typescript": "^5.4.5",
 
-    "uploadthing": "^6.10.0"
+    "uploadthing": "^6.10.0",
+
+    "yarn": "^1.22.22"
 
   },
 

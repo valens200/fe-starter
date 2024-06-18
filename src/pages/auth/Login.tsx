@@ -2,9 +2,6 @@ import { useEffect, useState, useRef } from "react";
 
 import "../../assets/scss/login.scss";
 import toast from "react-hot-toast";
-import AppServices from "../../services";
-import Modal from "../../components/models/Modal";
-
 import { loadUser, selectIsLoggedIn } from "../../store/modules/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";

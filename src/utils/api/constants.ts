@@ -1,7 +1,7 @@
 import _ from "axios";
 
 // const backend = "http://127.0.0.1:5173/api/v1";
-const backend = "http://localhost:4000/api/v1";
+const backend = "http://localhost:5000/api/v1";
 
 export const api = _.create({
   baseURL: backend,

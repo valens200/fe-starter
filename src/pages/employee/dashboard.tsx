@@ -2,7 +2,7 @@ import TableWrapper from "../../components/common/TableWrapper";
 import StatsCard from "../../components/common/StatsCard";
 import { StatsCardProps } from "../../types/index";
 import { generatePageTitle } from "../../utils/index";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@mantine/core";
 import { faker } from "@faker-js/faker";
 import { FiPlus } from "react-icons/fi";
@@ -12,9 +12,12 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store";
 import { showCreateLaptop } from "../../atoms/index";
 import UpdateLaptop from "../../components/modals/UpdateLaptop";
+import { useEffect } from "react";
+import { isUserAllowed } from "../../middlewares";
 
 export default function EmployeeOverview() {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate()
   const stats: StatsCardProps[] = [
     {
       title: "Labtops received",
@@ -79,6 +82,11 @@ export default function EmployeeOverview() {
     status: ["PENDING", "RECEIVED", "REVOKED"][Math.floor(Math.random() * 2)],
   }));
 
+  useEffect(() => {
+    if(!isUserAllowed(["EMPLOYEE"])){
+      navigate("/")
+    }
+  },[])
   return (
     <div className="w-full space-y-6 pl-10 pt-10">
       {/* stats cards */}
@@ -95,7 +103,6 @@ export default function EmployeeOverview() {
         </div>
       </div>
 
-      {/* experiments + top trainers & trainees */}
       <div className="flex flex-col w-full gap-6">
         <div className="graph-card">
           <AddLaptop />

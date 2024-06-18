@@ -38,7 +38,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (!res.data.data.user.roles)
         toast.error("The user don't have any role");
-
+      let  roleNames :string = "";
+      const roles = res.data.data.user.roles;
+      roles.forEach((role :any) => {
+        roleNames += ", " + role.name;
+      })
+      localStorage.setItem("userRoles", roleNames)
       navigate(getUseRoute(res.data.data.user.roles[0].name));
       setLoggingIn(false);
     } catch (error) {

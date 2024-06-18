@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "../../assets/scss/dashboard.scss";
 import "../../assets/scss/modal.scss";
 import { selectIsLoggedIn } from "../../store/modules/authSlice";
@@ -28,6 +28,8 @@ import {
 import UpdateEmployee from "../../components/modals/UpdateEmployee";
 import { MdAssignmentAdd } from "react-icons/md";
 import AssignLaptops from "../../components/modals/AssignLaptops";
+import { useNavigate } from "react-router-dom";
+import { isUserAllowed } from "../../middlewares";
 
 function AdminDashboard() {
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -40,6 +42,7 @@ function AdminDashboard() {
   const [, setShowUpdateEmployee] = useRecoilState(showUpdateEmployee);
   const [, setShowAssignLaptop] = useRecoilState(showAssignLaptop);
 
+  const navigate = useNavigate();
   const data = useSelector(selectEmployees);
 
   const showUpdate = (employee: any) => {
@@ -113,7 +116,7 @@ function AdminDashboard() {
   } = useSWR("/employees", async (url) => {
     try {
       const res = await authApi.get(url);
-      dispatch(setEmployees(res.data.employees));
+      // dispatch(setEmployees(res.data.employees));
       // setData(res.data.employees);
     } catch (error) {
       console.log(error);
@@ -155,6 +158,12 @@ function AdminDashboard() {
       color: "bg-yellow-200",
     },
   ];
+
+  useEffect(() => {
+    if(!isUserAllowed(["ADMIN"])){
+      navigate("/")
+    }
+  },[])
   return (
     <div className="w-full space-y-6 pl-10 pt-10">
       <div className="space-y-3">
@@ -201,3 +210,7 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard;
+function isAllowed(arg0: string[]) {
+  throw new Error("Function not implemented.");
+}
+

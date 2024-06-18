@@ -18,11 +18,11 @@ export const capitalize = (str: string): string => {
 };
 
 export const getUseRoute = (role: UserRole): string => {
-  console.log(role, "======");
+  console.log(UserRole[UserRole.EMPLOYEE])
   switch (role) {
-    case UserRole.EMPLOYEE:
+    case UserRole[UserRole.EMPLOYEE]:
       return "/employee/dashboard";
-    case UserRole.ADMIN:
+    case UserRole[UserRole.ADMIN]:
       return "/admin/dashboard";
     default:
       return "/";

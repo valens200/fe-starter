@@ -42,14 +42,14 @@ const EmployeeLayout = ({ children, links }: LayoutProps) => {
   //   navigate("/login");
   // };
 
-  useEffect(() => {
-    if (!loaded) {
-      dispatch(loadUser());
-      setLoaded(true);
-    } else if (!user) {
-      navigate("/login");
-    }
-  }, [loaded]);
+  // useEffect(() => {
+  //   if (!loaded) {
+  //     dispatch(loadUser());
+  //     setLoaded(true);
+  //   } else if (!user) {
+  //     navigate("/login");
+  //   }
+  // }, [loaded]);
 
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
